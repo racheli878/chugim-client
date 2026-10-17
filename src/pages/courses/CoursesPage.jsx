@@ -3,11 +3,12 @@ import { useSearchParams } from 'react-router-dom';
 import { ApiError, describeError } from '../../api/client.js';
 import { categoriesApi, coursesApi, enrollmentsApi } from '../../api/endpoints.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
-import Icon from '../../components/Icon.jsx';
+import AsyncList from '../../components/AsyncList.jsx';
 import Pagination from '../../components/Pagination.jsx';
 import StateMessage from '../../components/StateMessage.jsx';
 import { useToast } from '../../components/Toast.jsx';
-import { useDebouncedValue } from '../../hooks/useDebouncedValue.js';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch.js';
+import { usePagedQuery } from '../../hooks/usePagedQuery.js';
 import { dayLabel, formatTime } from '../../lib/format.js';
 import CourseCard, { CourseCardSkeleton } from './CourseCard.jsx';
 import CourseFilters from './CourseFilters.jsx';
@@ -27,57 +28,31 @@ export default function CoursesPage() {
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const filters = useMemo(() => readFilters(params), [params]);
-  const queryKey = params.toString();
-
-  const [courses, setCourses] = useState({ status: 'loading', data: null, error: null });
-  const [reloadKey, setReloadKey] = useState(0);
-  const [categories, setCategories] = useState([]);
-  const [pendingId, setPendingId] = useState(null);
-  const [flash, setFlash] = useState({});
-  const enrolled = useEnrolledCourseIds(!isAdmin);
-  const listTopRef = useRef(null);
 
   const updateFilters = useCallback(
     (changes, options) => setParams((current) => applyFilterChanges(current, changes), options),
     [setParams]
   );
 
-  // ---- חיפוש: מקלידים חופשי, והכתובת מתעדכנת רק כשמפסיקים להקליד ----
-  const [searchText, setSearchText] = useState(filters.search);
-  const debouncedSearch = useDebouncedValue(searchText.trim());
-  useEffect(() => {
-    if (debouncedSearch !== filters.search) updateFilters({ search: debouncedSearch }, { replace: true });
-  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    // סינון שהתאפס מבחוץ (ניקוי / "אחורה") — מעדכנים גם את תיבת החיפוש.
-    setSearchText((current) => (current.trim() === filters.search ? current : filters.search));
-  }, [filters.search]);
+  const courses = usePagedQuery(
+    (signal) => coursesApi.list(toApiQuery(filters), signal),
+    params.toString(),
+    { onPageOverflow: (lastPage) => updateFilters({ page: lastPage }, { replace: true }) }
+  );
 
-  // ---- קטגוריות (פעם אחת) ----
+  const [searchText, setSearchText] = useDebouncedSearch(filters.search, (search) =>
+    updateFilters({ search }, { replace: true })
+  );
+
+  const [categories, setCategories] = useState([]);
   useEffect(() => {
     categoriesApi.list().then(setCategories).catch(() => setCategories([]));
   }, []);
 
-  // ---- החוגים: בקשה חדשה בכל שינוי בכתובת; בקשה ישנה מבוטלת ----
-  useEffect(() => {
-    const controller = new AbortController();
-    setCourses((current) => ({ ...current, status: 'loading', error: null }));
-
-    coursesApi
-      .list(toApiQuery(filters), controller.signal)
-      .then((data) => {
-        if (data.totalPages > 0 && filters.page > data.totalPages) {
-          updateFilters({ page: data.totalPages }, { replace: true });
-          return;
-        }
-        setCourses({ status: 'ready', data, error: null });
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') setCourses((current) => ({ ...current, status: 'error', error }));
-      });
-
-    return () => controller.abort();
-  }, [queryKey, reloadKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const enrolled = useEnrolledCourseIds(!isAdmin);
+  const [pendingId, setPendingId] = useState(null);
+  const [flash, setFlash] = useState({});
+  const listTopRef = useRef(null);
 
   const changePage = (page) => {
     updateFilters({ page });
@@ -90,17 +65,11 @@ export default function CoursesPage() {
     setTimeout(() => setFlash(({ [courseId]: _done, ...rest }) => rest), FLASH_MS);
   };
 
-  const replaceCourse = (course) =>
-    setCourses((current) => ({
-      ...current,
-      data: current.data && { ...current.data, items: current.data.items.map((c) => (c.id === course.id ? course : c)) }
-    }));
-
   /** טוען מחדש חוג אחד מהשרת, כדי להציג את מספר המקומות האמיתי. */
   const refreshCourse = async (courseId) => {
     try {
       const fresh = await coursesApi.get(courseId);
-      replaceCourse(fresh);
+      courses.updateItem(fresh);
       return fresh;
     } catch {
       return null;
@@ -149,74 +118,8 @@ export default function CoursesPage() {
     }
   };
 
-  // ---- תצוגה ----
-  const { status, data, error } = courses;
   const filtered = hasActiveFilters(filters);
-  const isRefreshing = status === 'loading' && data;
-
-  let content;
-  if (status === 'error' && !data) {
-    content = (
-      <StateMessage
-        tone="error"
-        title="לא הצלחנו לטעון את החוגים"
-        action={
-          <button type="button" className="btn btn-ghost" onClick={() => setReloadKey((k) => k + 1)}>
-            <Icon name="refresh" />לנסות שוב
-          </button>
-        }
-      >
-        {describeError(error)}
-      </StateMessage>
-    );
-  } else if (!data) {
-    content = (
-      <div className="course-grid" aria-busy="true">
-        {Array.from({ length: 6 }, (_, i) => <CourseCardSkeleton key={i} />)}
-        <span className="visually-hidden" role="status">טוענת חוגים…</span>
-      </div>
-    );
-  } else if (data.items.length === 0) {
-    content = filtered ? (
-      <StateMessage
-        title="לא מצאנו חוג שמתאים לחיפוש"
-        action={
-          <button type="button" className="btn btn-ghost" onClick={() => updateFilters({ search: '', categoryId: null, onlyAvailable: false })}>
-            ניקוי הסינון
-          </button>
-        }
-      >
-        אולי כדאי לנסות מילה אחרת או קטגוריה אחרת.
-      </StateMessage>
-    ) : (
-      <StateMessage title="עוד אין חוגים">החוגים החדשים יופיעו כאן ממש בקרוב.</StateMessage>
-    );
-  } else {
-    content = (
-      <>
-        {status === 'error' && (
-          <p className="inline-error" role="alert">
-            {describeError(error)}{' '}
-            <button type="button" className="link-button" onClick={() => setReloadKey((k) => k + 1)}>לנסות שוב</button>
-          </p>
-        )}
-        <div className={`course-grid${isRefreshing ? ' is-refreshing' : ''}`} aria-busy={isRefreshing || undefined}>
-          {data.items.map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              isAdmin={isAdmin}
-              isEnrolled={enrolled.ids.has(course.id)}
-              pending={pendingId === course.id}
-              flash={flash[course.id]}
-              onEnroll={enroll}
-            />
-          ))}
-        </div>
-        <Pagination page={data.page} totalPages={data.totalPages} onChange={changePage} label="עמודי חוגים" />
-      </>
-    );
-  }
+  const { data } = courses;
 
   return (
     <div className="container page">
@@ -235,13 +138,54 @@ export default function CoursesPage() {
 
       <div ref={listTopRef} className="results-line" aria-live="polite">
         {data && resultsText(data.totalCount, filtered)}
-        {data && data.totalPages > 1 && (
-          <span className="results-page"> · עמוד {data.page} מתוך {data.totalPages}</span>
-        )}
+        {data && data.totalPages > 1 && <span> · עמוד {data.page} מתוך {data.totalPages}</span>}
       </div>
 
-      {content}
+      <AsyncList
+        query={courses}
+        errorTitle="לא הצלחנו לטעון את החוגים"
+        skeleton={
+          <div className="course-grid" aria-busy="true">
+            {Array.from({ length: 6 }, (_, i) => <CourseCardSkeleton key={i} />)}
+            <span className="visually-hidden" role="status">טוענת חוגים…</span>
+          </div>
+        }
+        empty={
+          filtered ? (
+            <StateMessage
+              title="לא מצאנו חוג שמתאים לחיפוש"
+              action={
+                <button type="button" className="btn btn-ghost" onClick={() => updateFilters({ search: '', categoryId: null, onlyAvailable: false })}>
+                  ניקוי הסינון
+                </button>
+              }
+            >
+              אולי כדאי לנסות מילה אחרת או קטגוריה אחרת.
+            </StateMessage>
+          ) : (
+            <StateMessage title="עוד אין חוגים">החוגים החדשים יופיעו כאן ממש בקרוב.</StateMessage>
+          )
+        }
+      >
+        {(page) => (
+          <>
+            <div className={`course-grid${courses.isRefreshing ? ' is-refreshing' : ''}`} aria-busy={courses.isRefreshing || undefined}>
+              {page.items.map((course) => (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  isAdmin={isAdmin}
+                  isEnrolled={enrolled.ids.has(course.id)}
+                  pending={pendingId === course.id}
+                  flash={flash[course.id]}
+                  onEnroll={enroll}
+                />
+              ))}
+            </div>
+            <Pagination page={page.page} totalPages={page.totalPages} onChange={changePage} label="עמודי חוגים" />
+          </>
+        )}
+      </AsyncList>
     </div>
   );
 }
-

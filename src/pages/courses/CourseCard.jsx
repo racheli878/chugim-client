@@ -35,7 +35,7 @@ function Stub({ course, status, isAdmin, pending, onEnroll }) {
       </div>
 
       {isAdmin ? (
-        <Link to="/admin" className="btn btn-ghost btn-block">לניהול</Link>
+        <Link to={`/admin?q=${encodeURIComponent(course.title)}`} className="btn btn-ghost btn-block">לניהול</Link>
       ) : status === 'full' ? (
         <button type="button" className="btn btn-full btn-block" disabled>החוג התמלא</button>
       ) : (

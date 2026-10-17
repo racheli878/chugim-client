@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
-import { categoryTheme } from '../lib/categoryTheme.js';
 import { firstName } from '../lib/format.js';
+import Avatar from './Avatar.jsx';
 import BrandMark from './BrandMark.jsx';
 
 // המסגרת מוצגת רק למחוברות (היא עטופה ב-RequireAuth ב-App).
@@ -13,15 +13,6 @@ function navItems(isAdmin) {
   ];
   if (isAdmin) items.push({ to: '/admin', label: 'ניהול' });
   return items;
-}
-
-function Avatar({ user }) {
-  const name = firstName(user.fullName);
-  return (
-    <span className="avatar" aria-hidden="true" style={{ background: categoryTheme(user.id).color }}>
-      {name.charAt(0)}
-    </span>
-  );
 }
 
 export default function Layout() {
@@ -67,7 +58,7 @@ export default function Layout() {
 
             <div className="user-area">
               <span className="user-chip">
-                <Avatar user={user} />
+                <Avatar id={user.id} name={user.fullName} />
                 היי, {firstName(user.fullName)}
                 {isAdmin && <span className="role-badge">מנהלת</span>}
               </span>

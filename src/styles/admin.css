@@ -1,0 +1,96 @@
+/* ===== ניהול ===== */
+.admin-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
+
+.admin-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+.admin-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.admin-search { flex: none; background: var(--surface); }
+
+.btn-sm { min-height: 38px; padding: 0 12px; font-size: 15px; gap: 6px; }
+
+/* טבלה */
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+  transition: opacity 0.2s;
+}
+.table-wrap.is-refreshing { opacity: 0.55; pointer-events: none; }
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th {
+  text-align: start; padding: 12px 16px; font-size: 14px; font-weight: 700; color: var(--muted);
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.admin-table td { padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.admin-table tbody tr:last-child td { border-bottom: 0; }
+.admin-table tbody tr { transition: background-color 0.15s; }
+.admin-table tbody tr:hover { background: #FCFBFE; }
+
+.table-course { display: flex; align-items: center; gap: 12px; }
+.table-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--cat); flex-shrink: 0; box-shadow: 0 0 0 4px var(--cat-tint); }
+.table-title { font-weight: 700; }
+.table-sub { font-size: 14px; color: var(--muted); }
+
+.table-seats { display: flex; align-items: center; gap: 10px; font-weight: 700; white-space: nowrap; }
+.mini-bar { width: 72px; height: 8px; border-radius: var(--radius-pill); background: var(--line); overflow: hidden; }
+.mini-bar > span { display: block; height: 100%; border-radius: inherit; background: var(--cat); }
+.table-seats.is-last { color: var(--last-deep); }
+.table-seats.is-last .mini-bar > span { background: var(--last); }
+.table-seats.is-full { color: var(--danger-deep); }
+.table-seats.is-full .mini-bar > span { background: var(--danger); }
+
+.table-actions { white-space: nowrap; text-align: end; }
+.table-actions .btn + .btn { margin-inline-start: 6px; }
+
+.table-skeleton-row { padding: 18px 16px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+.table-skeleton-row .skeleton-title { width: 40%; height: 20px; }
+
+/* קטגוריות */
+.admin-aside {
+  position: sticky; top: 92px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+  padding: 20px; display: flex; flex-direction: column; gap: 16px;
+}
+.aside-title { font-size: 24px; font-weight: 700; }
+.category-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.category-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: var(--radius-pill);
+  background: var(--cat-tint); font-weight: 500; animation: row-in 0.25s ease-out;
+}
+.category-form { display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px dashed var(--line-strong); }
+.next-color {
+  display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--cat);
+  margin-inline-end: 6px; vertical-align: middle;
+}
+
+/* טופס חוג */
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.form-grid .span-2 { grid-column: 1 / -1; }
+
+/* משתתפות */
+.participant-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; transition: opacity 0.2s; }
+.participant-list.is-refreshing { opacity: 0.55; }
+.participant { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.participant:last-child { border-bottom: 0; }
+.participant-name { font-weight: 700; flex: 1 1 auto; }
+.participant-date { color: var(--muted); font-size: 14px; }
+.participant.is-cancelled .participant-name { color: #8C8597; }
+.participant .avatar { box-shadow: none; }
+
+/* ===== מסכים צרים ===== */
+@media (max-width: 1000px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .admin-aside { position: static; }
+}
+
+@media (max-width: 760px) {
+  .admin-table thead { display: none; }
+  .admin-table, .admin-table tbody, .admin-table tr, .admin-table td { display: block; width: 100%; }
+  .admin-table tr { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .admin-table tbody tr:last-child { border-bottom: 0; }
+  .admin-table td { padding: 4px 0; border: 0; }
+  .admin-table td[data-label]:not(:first-child)::before {
+    content: attr(data-label); display: block; font-size: 13px; font-weight: 700; color: var(--muted);
+  }
+  .table-actions { text-align: start; white-space: normal; display: flex !important; flex-wrap: wrap; gap: 6px; padding-top: 10px !important; }
+  .table-actions .btn + .btn { margin: 0; }
+  .form-grid { grid-template-columns: 1fr; }
+}

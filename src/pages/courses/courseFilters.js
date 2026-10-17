@@ -43,7 +43,7 @@ export const hasActiveFilters = (filters) =>
   Boolean(filters.search || filters.categoryId || filters.onlyAvailable);
 
 /** פרמטרים לשרת (GET /api/courses). */
-export function toApiQuery(filters) {
+export function toApiQuery(filters, pageSize = PAGE_SIZE) {
   const { sortBy, descending } = SORT_OPTIONS[filters.sort];
   return {
     search: filters.search || undefined,
@@ -52,6 +52,6 @@ export function toApiQuery(filters) {
     sortBy,
     descending: descending || undefined,
     page: filters.page,
-    pageSize: PAGE_SIZE
+    pageSize
   };
 }

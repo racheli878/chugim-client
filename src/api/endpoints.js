@@ -18,7 +18,7 @@ export const coursesApi = {
   create: (course) => apiRequest('/api/courses', { method: 'POST', body: course }),
   update: (id, course) => apiRequest(`/api/courses/${id}`, { method: 'PUT', body: course }),
   remove: (id) => apiRequest(`/api/courses/${id}`, { method: 'DELETE' }),
-  enrollments: (id, query) => apiRequest(`/api/courses/${id}/enrollments`, { query })
+  enrollments: (id, query, signal) => apiRequest(`/api/courses/${id}/enrollments`, { query, signal })
 };
 
 export const enrollmentsApi = {

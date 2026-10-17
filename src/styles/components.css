@@ -50,3 +50,34 @@
   animation: shimmer 1.3s ease-in-out infinite;
 }
 @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* ===== חלונות (Modal / אישור) ===== */
+.dialog {
+  width: min(440px, calc(100vw - 32px));
+  padding: 0; border: 0; border-radius: 24px;
+  background: var(--surface); color: var(--ink);
+  box-shadow: var(--shadow-pop);
+}
+.dialog::backdrop { background: var(--overlay); }
+.dialog[open] { animation: dialog-in 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
+.dialog[open]::backdrop { animation: fade-in 0.2s ease-out; }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(10px) scale(0.97); } }
+@keyframes fade-in { from { opacity: 0; } }
+
+.dialog-body { padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+.dialog-title { font-weight: 700; font-size: 28px; }
+.dialog-text { color: var(--muted); font-size: 17px; }
+.dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.dialog-actions .btn { min-height: 46px; padding: 0 20px; }
+.dialog-lg { width: min(720px, calc(100vw - 32px)); }
+.dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.dialog-subtitle { margin-top: 4px; color: var(--muted); }
+.icon-button {
+  width: 40px; height: 40px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 12px; background: transparent; color: var(--muted); cursor: pointer;
+}
+.icon-button:hover { background: var(--bg); color: var(--ink); }
+@media (max-width: 560px) {
+  .dialog-body { padding: 22px 18px; }
+  .dialog-title { font-size: 24px; }
+}

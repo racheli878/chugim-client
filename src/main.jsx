@@ -11,6 +11,7 @@ import './styles/components.css';
 import './styles/auth.css';
 import './styles/courses.css';
 import './styles/my.css';
+import './styles/admin.css';
 
 // סדר העטיפה חשוב: Auth משתמש גם בניווט וגם בהודעות, ולכן הוא בפנים.
 createRoot(document.getElementById('root')).render(

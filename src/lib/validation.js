@@ -14,6 +14,14 @@ export const minLength = (min, message) => (value) =>
 export const maxLength = (max, message) => (value) =>
   !value || String(value).trim().length <= max ? null : message;
 
+/** מספר (שלם, אם integer) בטווח [min, max]. ריק לא נבדק כאן — בשביל זה יש required. */
+export const range = (min, max, message, { integer = false } = {}) => (value) => {
+  if (value === '' || value === null || value === undefined) return null;
+  const number = Number(value);
+  const ok = Number.isFinite(number) && number >= min && number <= max && (!integer || Number.isInteger(number));
+  return ok ? null : message;
+};
+
 export const matches = (otherField, message) => (value, values) =>
   value === values[otherField] ? null : message;
 
