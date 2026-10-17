@@ -19,6 +19,8 @@
 /* ===== כותרת עליונה ===== */
 .site-header { position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
 .header-inner { display: flex; align-items: center; gap: 28px; min-height: 68px; }
+/* הכותרת העליונה נפרשת לכל רוחב המסך (התוכן עצמו נשאר ברוחב קריא) */
+.site-header .container { max-width: none; }
 .site-menu { display: flex; align-items: center; gap: 20px; flex: 1; }
 .main-nav { display: flex; gap: 6px; flex: 1; }
 
@@ -60,7 +62,7 @@
 
 /* ===== כותרת תחתונה ===== */
 .site-footer { border-top: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 14px; }
-.footer-inner { display: flex; align-items: center; gap: 10px; min-height: 56px; }
+.footer-inner { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; }
 
 /* ===== הודעות קופצות ===== */
 .toast-region {
