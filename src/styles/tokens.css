@@ -1,0 +1,53 @@
+/* כל ערכי העיצוב במקום אחד. מסכים משתמשים רק במשתנים — לא בצבעים "קשיחים". */
+:root {
+  /* טקסט */
+  --ink: #2A2433;
+  --muted: #6B6475;
+
+  /* משטחים וקווים */
+  --bg: #F8F6FB;
+  --surface: #FFFFFF;
+  --line: #ECE7F2;
+  --line-strong: #DDD6E8;
+  --seat-empty: #CFC6DC;
+  --stub-full: #F6F3F8;
+
+  /* ראשי (פטל) */
+  --primary: #CC2E5D;
+  --primary-tint: #FDE8EF;
+  --primary-deep: #A8204A;
+
+  /* מקום אחרון (מנדרינה) */
+  --last: #FF8B3D;
+  --last-fill: #FFD9BD;
+  --last-deep: #B4520F;
+
+  /* הצלחה ושגיאה */
+  --success: #2F8A4C;
+  --success-dot: #4FAE5C;
+  --success-tint: #E6F5E8;
+  --success-line: #CDEBD6;
+  --danger: #E04848;
+  --danger-deep: #B3261E;
+  --danger-line: #F2C4BF;
+
+  --focus: #8B6AE6;
+  --overlay: rgba(42, 36, 51, 0.42);
+
+  /* גופנים */
+  --font-display: 'Fredoka', 'Rubik', system-ui, sans-serif;
+  --font-body: 'Rubik', system-ui, sans-serif;
+
+  /* פינות וצל */
+  --radius-sm: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+  --shadow-pop: 0 12px 32px rgba(42, 36, 51, 0.14);
+
+  --container: 1200px;
+  --gutter: 32px;
+}
+
+@media (max-width: 640px) {
+  :root { --gutter: 16px; }
+}
