@@ -23,7 +23,7 @@ function ParticipantsList({ course }) {
     <AsyncList
       query={enrollments}
       errorTitle="לא הצלחנו לטעון את המשתתפות"
-      skeleton={<p className="dialog-text" role="status">טוענת…</p>}
+      skeleton={<p className="dialog-text" role="status">טוענים…</p>}
       empty={<StateMessage title="עוד אין משתתפות בחוג הזה">כשמישהי תירשם, היא תופיע כאן.</StateMessage>}
     >
       {(result) => (

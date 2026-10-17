@@ -59,7 +59,7 @@ export default function CategoriesPanel({ categories, onAdded }) {
           {...form.field('name')}
         />
         <FormAlert message={form.formError && describeError(form.formError)} />
-        <SubmitButton submitting={form.submitting} className="btn btn-primary btn-block" busyText="מוסיפה…">
+        <SubmitButton submitting={form.submitting} className="btn btn-primary btn-block" busyText="מוסיפים…">
           הוספת קטגוריה
         </SubmitButton>
       </form>

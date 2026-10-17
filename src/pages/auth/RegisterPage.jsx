@@ -7,6 +7,7 @@ import PasswordField from '../../components/form/PasswordField.jsx';
 import SubmitButton from '../../components/form/SubmitButton.jsx';
 import { useToast } from '../../components/Toast.jsx';
 import { useForm } from '../../hooks/useForm.js';
+import { usePageTitle } from '../../hooks/usePageTitle.js';
 import { firstName } from '../../lib/format.js';
 import { email, matches, maxLength, minLength, required, validateWith } from '../../lib/validation.js';
 import AuthLayout from './AuthLayout.jsx';
@@ -39,6 +40,7 @@ function passwordHint(length) {
 }
 
 export default function RegisterPage() {
+  usePageTitle('פתיחת חשבון');
   const { register } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
@@ -84,7 +86,7 @@ export default function RegisterPage() {
           {isConflict && <Link to="/login" state={location.state}>כבר יש לך חשבון? כניסה</Link>}
         </FormAlert>
 
-        <SubmitButton submitting={form.submitting} busyText="פותחת חשבון…">פתיחת חשבון</SubmitButton>
+        <SubmitButton submitting={form.submitting} busyText="פותחים חשבון…">פתיחת חשבון</SubmitButton>
 
         <p className="auth-switch">
           כבר יש לך חשבון? <Link to="/login" state={location.state}>כניסה</Link>

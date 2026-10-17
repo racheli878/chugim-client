@@ -10,6 +10,7 @@ import StateMessage from '../../components/StateMessage.jsx';
 import { useToast } from '../../components/Toast.jsx';
 import { usePageParam } from '../../hooks/usePageParam.js';
 import { usePagedQuery } from '../../hooks/usePagedQuery.js';
+import { usePageTitle } from '../../hooks/usePageTitle.js';
 import EnrollmentRow, { EnrollmentRowSkeleton } from './EnrollmentRow.jsx';
 
 const PAGE_SIZE = 10;
@@ -29,6 +30,7 @@ function participantSubtitle(data) {
 
 export default function MyEnrollmentsPage() {
   const { isAdmin } = useAuth();
+  usePageTitle(isAdmin ? 'כל ההרשמות' : 'החוגים שלי');
   const toast = useToast();
   const [page, setPage] = usePageParam();
   const enrollments = usePagedQuery(

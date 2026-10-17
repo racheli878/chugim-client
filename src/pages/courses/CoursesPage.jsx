@@ -9,6 +9,7 @@ import StateMessage from '../../components/StateMessage.jsx';
 import { useToast } from '../../components/Toast.jsx';
 import { useDebouncedSearch } from '../../hooks/useDebouncedSearch.js';
 import { usePagedQuery } from '../../hooks/usePagedQuery.js';
+import { usePageTitle } from '../../hooks/usePageTitle.js';
 import { dayLabel, formatTime } from '../../lib/format.js';
 import CourseCard, { CourseCardSkeleton } from './CourseCard.jsx';
 import CourseFilters from './CourseFilters.jsx';
@@ -24,6 +25,7 @@ function resultsText(total, filtered) {
 }
 
 export default function CoursesPage() {
+  usePageTitle('כל החוגים');
   const { isAdmin } = useAuth();
   const toast = useToast();
   const [params, setParams] = useSearchParams();
@@ -147,7 +149,7 @@ export default function CoursesPage() {
         skeleton={
           <div className="course-grid" aria-busy="true">
             {Array.from({ length: 6 }, (_, i) => <CourseCardSkeleton key={i} />)}
-            <span className="visually-hidden" role="status">טוענת חוגים…</span>
+            <span className="visually-hidden" role="status">טוענים חוגים…</span>
           </div>
         }
         empty={

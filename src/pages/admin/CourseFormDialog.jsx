@@ -115,7 +115,7 @@ function CourseForm({ course, categories, titleId, onClose, onSaved, onBusyChang
       <FormAlert message={form.formError && describeError(form.formError)} />
 
       <div className="dialog-actions">
-        <SubmitButton submitting={form.submitting} className="btn btn-primary" busyText="שומרת…">
+        <SubmitButton submitting={form.submitting} className="btn btn-primary" busyText="שומרים…">
           {isNew ? 'הוספת החוג' : 'שמירת השינויים'}
         </SubmitButton>
         <button type="button" className="btn btn-ghost" onClick={onClose} disabled={form.submitting}>ביטול</button>

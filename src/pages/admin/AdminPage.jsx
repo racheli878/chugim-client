@@ -10,6 +10,7 @@ import StateMessage from '../../components/StateMessage.jsx';
 import { useToast } from '../../components/Toast.jsx';
 import { useDebouncedSearch } from '../../hooks/useDebouncedSearch.js';
 import { usePagedQuery } from '../../hooks/usePagedQuery.js';
+import { usePageTitle } from '../../hooks/usePageTitle.js';
 import { applyFilterChanges, readFilters, toApiQuery } from '../courses/courseFilters.js';
 import AdminCourseTable, { AdminTableSkeleton } from './AdminCourseTable.jsx';
 import CategoriesPanel from './CategoriesPanel.jsx';
@@ -19,6 +20,7 @@ import ParticipantsDialog from './ParticipantsDialog.jsx';
 const PAGE_SIZE = 10;
 
 export default function AdminPage() {
+  usePageTitle('ניהול');
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const filters = useMemo(() => readFilters(params), [params]);

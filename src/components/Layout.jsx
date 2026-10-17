@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { firstName } from '../lib/format.js';
@@ -20,8 +20,19 @@ export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
-  // מעבר דף סוגר את תפריט הטלפון.
-  useEffect(() => setMenuOpen(false), [location.pathname]);
+  const mainRef = useRef(null);
+  const isFirstRender = useRef(true);
+
+  // מעבר דף: סוגר את תפריט הטלפון, גולל למעלה ומעביר את הפוקוס לתוכן — כך קורא מסך מתחיל מהדף החדש.
+  useEffect(() => {
+    setMenuOpen(false);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    window.scrollTo(0, 0);
+    mainRef.current?.focus({ preventScroll: true });
+  }, [location.pathname]);
 
   return (
     <div className="app">
@@ -68,7 +79,7 @@ export default function Layout() {
         </div>
       </header>
 
-      <main id="main" className="site-main" tabIndex={-1}>
+      <main id="main" ref={mainRef} className="site-main" tabIndex={-1}>
         <Outlet />
       </main>
 

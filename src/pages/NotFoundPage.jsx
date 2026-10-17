@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+import { usePageTitle } from '../hooks/usePageTitle.js';
 
 export default function NotFoundPage() {
+  usePageTitle('הדף לא נמצא');
   return (
     <div className="container page empty-state">
       <p className="empty-state-number" aria-hidden="true">404</p>

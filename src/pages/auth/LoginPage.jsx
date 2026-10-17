@@ -7,6 +7,7 @@ import PasswordField from '../../components/form/PasswordField.jsx';
 import SubmitButton from '../../components/form/SubmitButton.jsx';
 import { useToast } from '../../components/Toast.jsx';
 import { useForm } from '../../hooks/useForm.js';
+import { usePageTitle } from '../../hooks/usePageTitle.js';
 import { firstName } from '../../lib/format.js';
 import { email, required, validateWith } from '../../lib/validation.js';
 import AuthLayout from './AuthLayout.jsx';
@@ -25,6 +26,7 @@ const DEMO_ACCOUNTS = [
 ];
 
 export default function LoginPage() {
+  usePageTitle('כניסה');
   const { login } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
@@ -58,7 +60,7 @@ export default function LoginPage() {
 
         <FormAlert message={alertMessage} />
 
-        <SubmitButton submitting={form.submitting} busyText="מתחברת…">כניסה</SubmitButton>
+        <SubmitButton submitting={form.submitting} busyText="מתחברים…">כניסה</SubmitButton>
 
         <p className="auth-switch">
           פעם ראשונה כאן? <Link to="/register" state={location.state}>פתיחת חשבון</Link>
