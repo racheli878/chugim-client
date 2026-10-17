@@ -86,7 +86,9 @@
 @keyframes last-pulse { 50% { box-shadow: 0 0 0 4px rgba(255, 139, 61, 0.25); } }
 @keyframes seat-in { 0% { transform: scale(0.2); } 60% { transform: scale(1.5); } 100% { transform: scale(1); } }
 
-.seat-bar { margin-top: auto; height: 12px; border-radius: var(--radius-pill); background: var(--bg); border: 2px solid var(--seat-empty); overflow: hidden; }
+.seat-summary { margin-top: auto; padding-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.seat-summary-text { font-size: 14px; font-weight: 500; color: var(--muted); }
+.seat-bar { height: 12px; border-radius: var(--radius-pill); background: var(--bg); border: 2px solid var(--seat-empty); overflow: hidden; }
 .seat-bar > span { display: block; height: 100%; background: var(--cat); border-radius: var(--radius-pill); transition: width 0.4s; }
 
 /* ===== הספח ===== */

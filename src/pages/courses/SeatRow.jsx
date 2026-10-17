@@ -1,7 +1,7 @@
 // שורת המושבים: עיגול לכל מקום. צבעוני = תפוס, ריק = פנוי, כתום = המקום האחרון.
-// בחוג גדול מאוד (מעל 30 מקומות) מוצג פס מילוי במקום עיגולים.
+// בחוג גדול (מעל 20 מקומות — יותר משתי שורות בכרטיס צר) מוצג פס מילוי עם מספרים במקום עיגולים.
 
-const MAX_DOTS = 30;
+const MAX_DOTS = 20;
 
 export default function SeatRow({ capacity, taken, highlightNewest }) {
   const free = Math.max(capacity - taken, 0);
@@ -9,8 +9,11 @@ export default function SeatRow({ capacity, taken, highlightNewest }) {
 
   if (capacity > MAX_DOTS) {
     return (
-      <div className="seat-bar" role="img" aria-label={label}>
-        <span style={{ width: `${Math.min(100, (taken / capacity) * 100)}%` }} />
+      <div className="seat-summary">
+        <div className="seat-bar" role="img" aria-label={label}>
+          <span style={{ width: `${Math.min(100, (taken / capacity) * 100)}%` }} />
+        </div>
+        <span className="seat-summary-text" aria-hidden="true">{taken} מתוך {capacity} תפוסים</span>
       </div>
     );
   }

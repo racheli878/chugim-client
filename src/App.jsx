@@ -6,6 +6,7 @@ import Placeholder from './pages/Placeholder.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
 import RegisterPage from './pages/auth/RegisterPage.jsx';
 import CoursesPage from './pages/courses/CoursesPage.jsx';
+import MyEnrollmentsPage from './pages/my/MyEnrollmentsPage.jsx';
 
 // כל האתר למחוברות בלבד, חוץ ממסכי הכניסה וההרשמה. (השרת אוכף את אותו כלל.)
 export default function App() {
@@ -17,7 +18,7 @@ export default function App() {
       <Route element={<RequireAuth><Layout /></RequireAuth>}>
         <Route index element={<Navigate to="/courses" replace />} />
         <Route path="/courses" element={<CoursesPage />} />
-        <Route path="/my" element={<Placeholder title="החוגים שלי" />} />
+        <Route path="/my" element={<MyEnrollmentsPage />} />
         <Route path="/admin" element={<RequireAdmin><Placeholder title="ניהול" /></RequireAdmin>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

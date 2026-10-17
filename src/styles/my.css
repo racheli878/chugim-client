@@ -1,0 +1,64 @@
+/* ===== החוגים שלי / כל ההרשמות ===== */
+.page-narrow { max-width: 880px; }
+
+.enrollment-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; transition: opacity 0.2s; }
+.enrollment-list.is-refreshing { opacity: 0.55; pointer-events: none; }
+
+.enrollment-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px;
+  padding: 18px 20px; border-radius: 20px;
+  background: var(--surface); border: 1px solid var(--line);
+  animation: row-in 0.25s ease-out backwards;
+}
+.enrollment-row:nth-child(2) { animation-delay: 40ms; }
+.enrollment-row:nth-child(3) { animation-delay: 80ms; }
+.enrollment-row:nth-child(n + 4) { animation-delay: 120ms; }
+@keyframes row-in { from { opacity: 0; transform: translateY(6px); } }
+
+.enrollment-icon {
+  width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--cat-tint);
+}
+.enrollment-icon > span { width: 16px; height: 16px; border-radius: 50%; background: var(--cat); }
+
+.enrollment-main { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.enrollment-title { font-weight: 600; font-size: 22px; overflow-wrap: anywhere; }
+.enrollment-meta { display: flex; flex-wrap: wrap; color: var(--muted); font-size: 15px; }
+.enrollment-meta > * + *::before { content: '·'; margin-inline: 8px; }
+.enrollment-participant { color: var(--ink); }
+
+.status-pill { font-size: 14px; font-weight: 700; padding: 6px 12px; border-radius: var(--radius-pill); }
+.status-pill.is-active { background: var(--success-tint); color: var(--success); }
+.status-pill.is-cancelled { background: #F1EEF5; color: var(--muted); }
+
+.enrollment-row.is-cancelled { background: #FCFBFD; }
+.enrollment-row.is-cancelled .enrollment-title { color: #8C8597; }
+.enrollment-row.is-cancelled .enrollment-icon { filter: grayscale(0.7); opacity: 0.7; }
+
+.enrollment-row.is-skeleton .enrollment-icon { background: none; }
+
+@media (max-width: 560px) {
+  .enrollment-row { padding: 16px; }
+  .enrollment-main { flex-basis: calc(100% - 60px); }
+  .enrollment-row .btn { margin-inline-start: auto; }
+}
+
+/* ===== חלון אישור ===== */
+.dialog {
+  width: min(440px, calc(100vw - 32px));
+  padding: 0; border: 0; border-radius: 24px;
+  background: var(--surface); color: var(--ink);
+  box-shadow: var(--shadow-pop);
+}
+.dialog::backdrop { background: var(--overlay); }
+.dialog[open] { animation: dialog-in 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
+.dialog[open]::backdrop { animation: fade-in 0.2s ease-out; }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(10px) scale(0.97); } }
+@keyframes fade-in { from { opacity: 0; } }
+
+.dialog-body { padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+.dialog-title { font-weight: 700; font-size: 28px; }
+.dialog-text { color: var(--muted); font-size: 17px; }
+.dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.dialog-actions .btn { min-height: 46px; padding: 0 20px; }
