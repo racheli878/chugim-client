@@ -7,18 +7,22 @@ import SubmitButton from '../../components/form/SubmitButton.jsx';
 import Icon from '../../components/Icon.jsx';
 import Modal from '../../components/Modal.jsx';
 import { useForm } from '../../hooks/useForm.js';
-import { DAYS, formatTime } from '../../lib/format.js';
+import { DAYS, formatTime, isPastDate, todayIso } from '../../lib/format.js';
 import { maxLength, minLength, range, required, validateWith } from '../../lib/validation.js';
 
-// אותם חוקים כמו CourseRequest בשרת, ועוד אחד: בעריכה אי אפשר לרדת מתחת למספר הרשומות.
-function buildValidator(enrolledCount) {
+// תאריך חדש חייב להיות היום או בעתיד. חוג שכבר התחיל אפשר לערוך בלי לשנות לו את התאריך (כמו בשרת).
+const notInPast = (originalDate) => (value) =>
+  value && value !== originalDate && isPastDate(value) ? 'תאריך הפתיחה כבר עבר. צריך לבחור את היום או תאריך עתידי.' : null;
+
+// אותם חוקים כמו בשרת: CourseRequest, תאריך שלא עבר, ובעריכה — לא לרדת מתחת למספר הרשומות.
+function buildValidator(enrolledCount, originalDate) {
   return validateWith({
     title: [required('צריך לתת לחוג שם'), minLength(2, 'השם קצר מדי'), maxLength(100, 'השם ארוך מדי')],
     categoryId: [required('צריך לבחור קטגוריה')],
     instructorName: [required('צריך למלא את שם המדריכה'), minLength(2, 'השם קצר מדי'), maxLength(100, 'השם ארוך מדי')],
     dayOfWeek: [required('צריך לבחור יום')],
     startTime: [required('צריך לבחור שעה')],
-    startDate: [required('צריך לבחור תאריך פתיחה')],
+    startDate: [required('צריך לבחור תאריך פתיחה'), notInPast(originalDate)],
     location: [required('צריך למלא מיקום'), maxLength(200, 'המיקום ארוך מדי')],
     price: [required('צריך למלא מחיר (0 = חינם)'), range(0, 10000, 'המחיר צריך להיות בין 0 ל-10,000')],
     capacity: [
@@ -59,7 +63,9 @@ const toRequest = (v) => ({
 function CourseForm({ course, categories, titleId, onClose, onSaved, onBusyChange }) {
   const isNew = !course;
   const enrolledCount = course?.enrolledCount ?? 0;
-  const [validate] = useState(() => buildValidator(enrolledCount));
+  const [validate] = useState(() => buildValidator(enrolledCount, course?.startDate));
+  // בחוג שכבר התחיל אי אפשר להגביל את בורר התאריך להיום — התאריך הקיים שלו חייב להישאר חוקי.
+  const minDate = course && isPastDate(course.startDate) ? undefined : todayIso();
   const form = useForm(toFormValues(course), validate);
 
   useEffect(() => onBusyChange(form.submitting), [form.submitting, onBusyChange]);
@@ -94,7 +100,7 @@ function CourseForm({ course, categories, titleId, onClose, onSaved, onBusyChang
           {DAYS.map((d) => <option key={d.value} value={d.value}>{d.label}</option>)}
         </Field>
         <Field label="שעה" type="time" ltr {...form.field('startTime')} />
-        <Field label="תאריך פתיחה" type="date" ltr {...form.field('startDate')} />
+        <Field label="תאריך פתיחה" type="date" ltr min={minDate} {...form.field('startDate')} />
         <Field label="מיקום" maxLength={200} {...form.field('location')} />
         <Field label="מחיר (₪)" type="number" inputMode="decimal" min="0" max="10000" step="any" ltr hint="0 = חינם" {...form.field('price')} />
         <Field

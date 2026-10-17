@@ -1,3 +1,4 @@
+import { useId, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../components/Icon.jsx';
 import { categoryStyle } from '../../lib/categoryTheme.js';
@@ -13,6 +14,40 @@ function cardStatus(course, isEnrolled) {
 }
 
 const SPOTS_LABEL = { full: 'אין מקום', last: 'מקום אחרון!', open: 'מקומות מחכים' };
+
+// תיאור מקוצר לשתי שורות. אם הוא באמת נחתך — מופיע "לקריאת הכול", שפותח אותו בתוך הכרטיס.
+function CourseDescription({ text }) {
+  const ref = useRef(null);
+  const id = useId();
+  const [expanded, setExpanded] = useState(false);
+  const [truncated, setTruncated] = useState(false);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    const check = () => setTruncated(el.scrollHeight > el.clientHeight + 1);
+    check();
+    const observer = new ResizeObserver(check); // רוחב הכרטיס משתנה עם החלון
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [text]);
+
+  return (
+    <div className="course-description-wrap">
+      <p ref={ref} id={id} className={`course-description${expanded ? ' is-expanded' : ''}`}>{text}</p>
+      {(truncated || expanded) && (
+        <button
+          type="button"
+          className="read-more"
+          aria-expanded={expanded}
+          aria-controls={id}
+          onClick={() => setExpanded((open) => !open)}
+        >
+          {expanded ? 'להסתיר' : 'לקריאת הכול'}
+        </button>
+      )}
+    </div>
+  );
+}
 
 function Stub({ course, status, isAdmin, pending, onEnroll }) {
   if (status === 'enrolled') {
@@ -71,7 +106,7 @@ export default function CourseCard({ course, isEnrolled, isAdmin, pending, flash
         </span>
         <h2 id={titleId} className="course-title">{course.title}</h2>
         <p className="course-instructor">עם {course.instructorName}</p>
-        {course.description && <p className="course-description">{course.description}</p>}
+        {course.description && <CourseDescription text={course.description} />}
 
         <ul className="course-meta">
           <li><Icon name="clock" size={16} />{formatWeekly(course.dayOfWeek, course.startTime)}</li>

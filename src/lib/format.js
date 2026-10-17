@@ -32,11 +32,13 @@ export const formatDateTime = (utc) => (utc ? dateFormatter.format(new Date(utc)
 
 export const formatPrice = (price) => (Number(price) > 0 ? priceFormatter.format(price) : 'חינם');
 
-/** "2026-11-01" עבר כבר? (השוואת מחרוזות עובדת בפורמט הזה) */
-export const isPastDate = (dateOnly) => {
+/** התאריך של היום בפורמט של השרת ושל <input type="date">: "2026-10-17". */
+export function todayIso() {
   const now = new Date();
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  return Boolean(dateOnly) && dateOnly < today;
-};
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
+/** "2026-11-01" עבר כבר? (השוואת מחרוזות עובדת בפורמט הזה) */
+export const isPastDate = (dateOnly) => Boolean(dateOnly) && dateOnly < todayIso();
 
 export const firstName = (fullName) => (fullName ?? '').trim().split(/\s+/)[0] ?? '';
