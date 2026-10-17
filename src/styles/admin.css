@@ -1,6 +1,6 @@
 /* ===== ניהול ===== */
-/* מסך עבודה עם טבלה וחלונית צד — מקבל יותר רוחב משאר הדפים */
-.page-wide { max-width: 1520px; }
+/* מסך עבודה עם טבלה וחלונית צד — נפרש לכל רוחב המסך, כמו הכותרת העליונה */
+.page-wide { max-width: none; }
 
 .admin-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
 
