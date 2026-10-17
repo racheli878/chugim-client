@@ -1,0 +1,52 @@
+/* ===== רכיבים משותפים: עימוד, מצבי ריק/שגיאה, שלדי טעינה ===== */
+
+.page-head { margin-bottom: 26px; }
+.page-head .page-subtitle { max-width: 640px; }
+
+.link-button {
+  border: 0; background: none; padding: 0;
+  color: var(--primary); font-weight: 700; text-decoration: underline; cursor: pointer;
+}
+.link-button:hover { color: var(--primary-deep); }
+
+.inline-error {
+  margin-bottom: 16px; padding: 10px 14px; border-radius: var(--radius-sm);
+  background: #FFF6F5; border: 1px solid var(--danger-line); color: var(--danger-deep); font-weight: 500;
+}
+
+/* עימוד */
+.pagination { margin-top: 32px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.page-btn {
+  min-width: 44px; min-height: 44px; padding: 0 12px;
+  border-radius: var(--radius-sm); border: 1px solid var(--line-strong);
+  background: var(--surface); font-weight: 500; cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.page-btn:hover:not(:disabled):not([aria-current]) { border-color: var(--ink); }
+.page-btn[aria-current='page'] { background: var(--ink); border-color: var(--ink); color: #FFFFFF; font-weight: 700; }
+.page-btn:disabled { color: #B3ACBF; border-color: var(--line); cursor: not-allowed; }
+.page-step { padding: 0 16px; }
+.page-gap { color: var(--muted); padding: 0 2px; }
+
+/* מצב ריק / שגיאה */
+.state-message {
+  display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+  padding: 56px 24px; border-radius: var(--radius-lg);
+  background: var(--surface); border: 1px dashed var(--line-strong);
+}
+.state-message .btn { margin-top: 8px; }
+.state-dots { display: flex; gap: 8px; margin-bottom: 6px; }
+.state-dots > span { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid var(--seat-empty); }
+.state-dots > span:nth-child(2) { border-color: var(--primary); background: var(--primary-tint); }
+.state-error .state-dots > span:nth-child(2) { border-color: var(--danger); background: #FFF6F5; }
+.state-title { font-size: 26px; font-weight: 700; }
+.state-text { color: var(--muted); max-width: 440px; }
+
+/* שלדי טעינה */
+.skeleton {
+  display: block; border-radius: 10px;
+  background: linear-gradient(90deg, var(--line) 0%, #F6F3FA 50%, var(--line) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s ease-in-out infinite;
+}
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }

@@ -40,10 +40,10 @@ export function AuthProvider({ children }) {
     writeSession(null);
     if (reason === 'expired') {
       toast.info('צריך להתחבר שוב', 'עבר זמן מאז ההתחברות, אז ניתקנו אותך לביטחון.');
-      navigate('/login');
+      navigate('/login', { replace: true, state: { from: window.location.pathname + window.location.search } });
     } else {
       toast.info('התנתקת. נתראה בקרוב!');
-      navigate('/courses');
+      navigate('/login', { replace: true });
     }
   }, [navigate, toast]);
 

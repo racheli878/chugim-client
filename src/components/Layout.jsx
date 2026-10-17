@@ -1,18 +1,31 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
+import { categoryTheme } from '../lib/categoryTheme.js';
 import { firstName } from '../lib/format.js';
 import BrandMark from './BrandMark.jsx';
 
-function navItems(isAuthenticated, isAdmin) {
-  const items = [{ to: '/courses', label: 'כל החוגים' }];
-  if (isAuthenticated) items.push({ to: '/my', label: isAdmin ? 'כל ההרשמות' : 'החוגים שלי' });
+// המסגרת מוצגת רק למחוברות (היא עטופה ב-RequireAuth ב-App).
+function navItems(isAdmin) {
+  const items = [
+    { to: '/courses', label: 'כל החוגים' },
+    { to: '/my', label: isAdmin ? 'כל ההרשמות' : 'החוגים שלי' }
+  ];
   if (isAdmin) items.push({ to: '/admin', label: 'ניהול' });
   return items;
 }
 
+function Avatar({ user }) {
+  const name = firstName(user.fullName);
+  return (
+    <span className="avatar" aria-hidden="true" style={{ background: categoryTheme(user.id).color }}>
+      {name.charAt(0)}
+    </span>
+  );
+}
+
 export default function Layout() {
-  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -45,7 +58,7 @@ export default function Layout() {
 
           <div id="site-menu" className={`site-menu${menuOpen ? ' is-open' : ''}`}>
             <nav aria-label="ניווט ראשי" className="main-nav">
-              {navItems(isAuthenticated, isAdmin).map((item) => (
+              {navItems(isAdmin).map((item) => (
                 <NavLink key={item.to} to={item.to} className="nav-link">
                   {item.label}
                 </NavLink>
@@ -53,20 +66,12 @@ export default function Layout() {
             </nav>
 
             <div className="user-area">
-              {isAuthenticated ? (
-                <>
-                  <span className="user-chip">
-                    היי, {firstName(user.fullName)}
-                    {isAdmin && <span className="role-badge">מנהלת</span>}
-                  </span>
-                  <button type="button" className="btn btn-quiet" onClick={logout}>יציאה</button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login" className="btn btn-quiet">כניסה</Link>
-                  <Link to="/register" className="btn btn-primary">פתיחת חשבון</Link>
-                </>
-              )}
+              <span className="user-chip">
+                <Avatar user={user} />
+                היי, {firstName(user.fullName)}
+                {isAdmin && <span className="role-badge">מנהלת</span>}
+              </span>
+              <button type="button" className="btn btn-quiet" onClick={logout}>יציאה</button>
             </div>
           </div>
         </div>
