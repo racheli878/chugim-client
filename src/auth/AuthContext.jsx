@@ -41,6 +41,9 @@ export function AuthProvider({ children }) {
     if (reason === 'expired') {
       toast.info('צריך להתחבר שוב', 'עבר זמן מאז ההתחברות, אז ניתקנו אותך לביטחון.');
       navigate('/login');
+    } else {
+      toast.info('התנתקת. נתראה בקרוב!');
+      navigate('/courses');
     }
   }, [navigate, toast]);
 

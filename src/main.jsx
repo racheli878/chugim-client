@@ -7,6 +7,7 @@ import { ToastProvider } from './components/Toast.jsx';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/layout.css';
+import './styles/auth.css';
 
 // סדר העטיפה חשוב: Auth משתמש גם בניווט וגם בהודעות, ולכן הוא בפנים.
 createRoot(document.getElementById('root')).render(

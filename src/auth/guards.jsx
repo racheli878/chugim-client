@@ -18,8 +18,10 @@ export function RequireAdmin({ children }) {
   return children;
 }
 
+// מחוברת שמגיעה לכניסה/הרשמה — חוזרת לאן שרצתה להגיע (או לחוגים).
 export function GuestOnly({ children }) {
   const { isAuthenticated } = useAuth();
-  if (isAuthenticated) return <Navigate to="/courses" replace />;
+  const location = useLocation();
+  if (isAuthenticated) return <Navigate to={location.state?.from ?? '/courses'} replace />;
   return children;
 }

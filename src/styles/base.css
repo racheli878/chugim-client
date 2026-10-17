@@ -83,8 +83,17 @@ a:hover { color: var(--primary-deep); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ===== שדות טופס ===== */
-.field { display: flex; flex-direction: column; gap: 6px; font-weight: 500; }
-.field-hint { color: var(--muted); font-size: 14px; font-weight: 400; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-weight: 500; }
+.field-hint { color: var(--muted); font-size: 14px; }
+.field-control { position: relative; }
+.field-control.has-adornment > .input { padding-inline-start: 48px; }
+.field-adornment {
+  position: absolute; inset-block: 0; inset-inline-start: 4px; margin-block: auto;
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 10px; background: transparent; color: var(--muted); cursor: pointer;
+}
+.field-adornment:hover { color: var(--ink); background: var(--bg); }
 .field-error { color: var(--danger-deep); font-size: 14px; font-weight: 500; }
 
 .input, .select, .textarea {
@@ -102,4 +111,13 @@ a:hover { color: var(--primary-deep); }
 .input-ltr { direction: ltr; text-align: right; }
 .textarea { min-height: 110px; resize: vertical; }
 
-.form-error { color: var(--danger-deep); font-weight: 500; }
+.form-alert {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 14px; border-radius: var(--radius-sm);
+  background: #FFF6F5; border: 1px solid var(--danger-line);
+  color: var(--danger-deep); font-weight: 500;
+  animation: alert-in 0.2s ease-out;
+}
+.form-alert-dot { width: 9px; height: 9px; margin-top: 8px; border-radius: 50%; background: var(--danger); flex-shrink: 0; }
+.form-alert a { font-weight: 700; }
+@keyframes alert-in { from { opacity: 0; transform: translateY(-4px); } }
