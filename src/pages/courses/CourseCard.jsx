@@ -111,7 +111,7 @@ export default function CourseCard({ course, isEnrolled, isAdmin, pending, flash
         <ul className="course-meta">
           <li><Icon name="clock" size={16} />{formatWeekly(course.dayOfWeek, course.startTime)}</li>
           <li><Icon name="pin" size={16} />{course.location}</li>
-          <li>
+          <li className={isPastDate(course.startDate) ? 'is-started' : undefined}>
             <Icon name="calendar" size={16} />
             {isPastDate(course.startDate) ? 'התחיל' : 'מתחיל'} ב-{formatDate(course.startDate)}
           </li>

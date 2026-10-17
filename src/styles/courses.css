@@ -79,6 +79,8 @@
 }
 .course-meta li { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .course-meta svg { color: var(--cat-deep); flex-shrink: 0; }
+.course-meta li.is-started { color: var(--last-deep); font-weight: 500; }
+.course-meta li.is-started svg { color: var(--last); }
 .course-price { font-weight: 700; font-family: var(--font-display); font-size: 17px; }
 
 /* ===== שורת המושבים ===== */

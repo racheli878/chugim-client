@@ -4,13 +4,14 @@ import { ApiError, describeError } from '../../api/client.js';
 import { categoriesApi, coursesApi, enrollmentsApi } from '../../api/endpoints.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 import AsyncList from '../../components/AsyncList.jsx';
+import ConfirmDialog from '../../components/ConfirmDialog.jsx';
 import Pagination from '../../components/Pagination.jsx';
 import StateMessage from '../../components/StateMessage.jsx';
 import { useToast } from '../../components/Toast.jsx';
 import { useDebouncedSearch } from '../../hooks/useDebouncedSearch.js';
 import { usePagedQuery } from '../../hooks/usePagedQuery.js';
 import { usePageTitle } from '../../hooks/usePageTitle.js';
-import { dayLabel, formatTime } from '../../lib/format.js';
+import { dayLabel, formatDate, formatTime, isPastDate } from '../../lib/format.js';
 import CourseCard, { CourseCardSkeleton } from './CourseCard.jsx';
 import CourseFilters from './CourseFilters.jsx';
 import { applyFilterChanges, hasActiveFilters, readFilters, toApiQuery } from './courseFilters.js';
@@ -54,6 +55,7 @@ export default function CoursesPage() {
   const enrolled = useEnrolledCourseIds(!isAdmin);
   const [pendingId, setPendingId] = useState(null);
   const [flash, setFlash] = useState({});
+  const [startedCourse, setStartedCourse] = useState(null);
   const listTopRef = useRef(null);
 
   const changePage = (page) => {
@@ -95,6 +97,18 @@ export default function CoursesPage() {
     } finally {
       setPendingId(null);
     }
+  };
+
+  // חוג שכבר התחיל: מותר להצטרף, אבל קודם מוודאים שהיא יודעת שהשיעורים שעברו לא יחזרו.
+  const requestEnroll = (course) => {
+    if (isPastDate(course.startDate)) setStartedCourse(course);
+    else enroll(course);
+  };
+
+  const confirmStartedEnroll = () => {
+    const course = startedCourse;
+    setStartedCourse(null);
+    enroll(course);
   };
 
   // 409 יכול להיות שלושה דברים שונים. בודקים מה המצב עכשיו בשרת, ולא מסתמכים על נוסח ההודעה.
@@ -180,7 +194,7 @@ export default function CoursesPage() {
                   isEnrolled={enrolled.ids.has(course.id)}
                   pending={pendingId === course.id}
                   flash={flash[course.id]}
-                  onEnroll={enroll}
+                  onEnroll={requestEnroll}
                 />
               ))}
             </div>
@@ -188,6 +202,19 @@ export default function CoursesPage() {
           </>
         )}
       </AsyncList>
+
+      <ConfirmDialog
+        open={Boolean(startedCourse)}
+        tone="primary"
+        title={startedCourse && `החוג "${startedCourse.title}" כבר התחיל`}
+        confirmLabel="כן, להירשם"
+        cancelLabel="לא עכשיו"
+        onConfirm={confirmStartedEnroll}
+        onCancel={() => setStartedCourse(null)}
+      >
+        {startedCourse &&
+          `הוא נפתח ב-${formatDate(startedCourse.startDate)}. אפשר להצטרף עכשיו, אבל השיעורים שכבר היו לא יחזרו.`}
+      </ConfirmDialog>
     </div>
   );
 }

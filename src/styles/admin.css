@@ -1,4 +1,7 @@
 /* ===== ניהול ===== */
+/* מסך עבודה עם טבלה וחלונית צד — מקבל יותר רוחב משאר הדפים */
+.page-wide { max-width: 1520px; }
+
 .admin-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
 
 .admin-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
@@ -9,7 +12,7 @@
 
 /* טבלה */
 .table-wrap {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow-x: auto;
   transition: opacity 0.2s;
 }
 .table-wrap.is-refreshing { opacity: 0.55; pointer-events: none; }
@@ -36,7 +39,7 @@
 .table-seats.is-full { color: var(--danger-deep); }
 .table-seats.is-full .mini-bar > span { background: var(--danger); }
 
-.table-actions { white-space: nowrap; text-align: end; }
+.table-actions { white-space: nowrap; text-align: end; padding-inline-end: 20px !important; }
 .table-actions .btn + .btn { margin-inline-start: 6px; }
 
 .table-skeleton-row { padding: 18px 16px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }

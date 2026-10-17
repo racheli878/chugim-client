@@ -1,9 +1,10 @@
 import { useId } from 'react';
 import Modal from './Modal.jsx';
 
-// חלון אישור לפעולה הרסנית. כפתור הביטול מקבל פוקוס ראשון — כך Enter בטעות לא מוחק כלום.
+// חלון אישור. כפתור הביטול מקבל פוקוס ראשון — כך Enter בטעות לא מבצע כלום.
+// tone: 'danger' לפעולה הרסנית (מחיקה, ביטול) · 'primary' לאישור רגיל (הרשמה עם הסתייגות).
 export default function ConfirmDialog({
-  open, title, children, confirmLabel, cancelLabel = 'ביטול', busy = false, onConfirm, onCancel
+  open, title, children, confirmLabel, cancelLabel = 'ביטול', tone = 'danger', busy = false, onConfirm, onCancel
 }) {
   const titleId = useId();
 
@@ -13,7 +14,7 @@ export default function ConfirmDialog({
         <h2 id={titleId} className="dialog-title">{title}</h2>
         {children && <p className="dialog-text">{children}</p>}
         <div className="dialog-actions">
-          <button type="button" className="btn btn-danger" disabled={busy} aria-busy={busy || undefined} onClick={onConfirm}>
+          <button type="button" className={`btn btn-${tone}`} disabled={busy} aria-busy={busy || undefined} onClick={onConfirm}>
             {busy && <span className="spinner" aria-hidden="true" />}
             {confirmLabel}
           </button>

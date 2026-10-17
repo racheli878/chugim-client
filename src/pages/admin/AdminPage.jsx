@@ -75,7 +75,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="container page">
+    <div className="container page page-wide">
       <header className="page-head admin-head">
         <div>
           <h1 className="page-title">ניהול חוגים</h1>
