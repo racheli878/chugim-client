@@ -86,7 +86,7 @@ export default function Layout() {
       <footer className="site-footer">
         <div className="container footer-inner">
           <BrandMark size={7} />
-          <span>חוגים · כל מקום נתפס פעם אחת בלבד</span>
+          <span>חוגים · כל מקום נתפס פעם אחת בלבד · יש לשלם במזומן במפגש הראשון</span>
         </div>
       </footer>
     </div>
